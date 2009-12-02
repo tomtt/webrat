@@ -423,6 +423,11 @@ describe "click_link" do
     click_link_within "//div", "Link"
   end
 
+  it "should raise the css syntax error if the selector is not valid" do
+    with_html "<html/>"
+    lambda { click_link_within "--", "Link" }.should raise_error(Nokogiri::CSS::SyntaxError)
+  end
+
   it "should not make request when link is local anchor" do
     with_html <<-HTML
       <html>
