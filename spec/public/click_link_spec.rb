@@ -409,6 +409,20 @@ describe "click_link" do
     click_link_within "#container", "Link"
   end
 
+  it "should click link within xpath" do
+    with_html <<-HTML
+    <html>
+      <a href="/page1">Link</a>
+      <div id="container">
+        <a href="/page2">Link</a>
+      </div>
+    </html>
+    HTML
+
+    webrat_session.should_receive(:get).with("/page2", {})
+    click_link_within "//div", "Link"
+  end
+
   it "should not make request when link is local anchor" do
     with_html <<-HTML
       <html>

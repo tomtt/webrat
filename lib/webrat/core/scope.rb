@@ -331,8 +331,22 @@ module Webrat
       return dom
     end
 
+    def xpath_scoped_dom
+      @scope.dom.xpath(@selector).first
+    end
+
     def scoped_dom
-      @scope.dom.css(@selector).first
+      begin
+        @scope.dom.css(@selector).first
+      rescue Nokogiri::CSS::SyntaxError, Nokogiri::XML::XPath::SyntaxError => e
+        begin
+          # That was not a css selector, mayby it's an xpath selector?
+          xpath_scoped_dom
+        rescue
+          # Raise original css syntax error if selector is not xpath either
+          raise e
+        end
+      end
     end
 
     def locate_field(field_locator, *field_types) #:nodoc:
